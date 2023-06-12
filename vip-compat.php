@@ -1,7 +1,17 @@
 <?php
+/**
+ * Handles WP VIP functionality
+ *
+ * @package eight-day-week
+ */
 
 namespace Eight_Day_Week;
 
+/**
+ * Retrieves a URL within the plugins, VIP, or mu-plugins directory.
+ *
+ * @param string $file A full path to a file inside a plugin or mu-plugin.
+ */
 function plugins_url( $file ) {
 	if ( function_exists( 'wpcom_vip_plugins_url' ) ) {
 		return wpcom_vip_plugins_url( '', '', $file );
@@ -10,6 +20,14 @@ function plugins_url( $file ) {
 	return \plugins_url( '/', $file );
 }
 
+/**
+ * Adds a role, if it does not exist.
+ *
+ * @param string $from_role Role name to duplicate.
+ * @param string $to_role Role name.
+ * @param string $to_role_name Display name for role.
+ * @param array  $new_caps List of capabilities keyed by the capability name.
+ */
 function duplicate_role( $from_role, $to_role, $to_role_name, $new_caps ) {
 	if ( function_exists( 'wpcom_vip_duplicate_role' ) ) {
 		wpcom_vip_duplicate_role( $from_role, $to_role, $to_role_name, $new_caps );
@@ -22,9 +40,9 @@ function duplicate_role( $from_role, $to_role, $to_role_name, $new_caps ) {
 /**
  * Get a list of capabilities for a role.
  *
- * @param string $role Role name
+ * @param string $role Role name.
  *
- * @return array Array of caps for the role
+ * @return array Array of caps for the role.
  */
 function get_role_caps( $role ) {
 	if ( function_exists( 'wpcom_vip_get_role_caps' ) ) {
@@ -46,9 +64,9 @@ function get_role_caps( $role ) {
  *
  * Usage: add_role( 'super-editor', 'Super Editor', array( 'level_0' => true ) );
  *
- * @param string $role Role name
- * @param string $name Display name for the role
- * @param array $capabilities Key/value array of capabilities for the role
+ * @param string $role Role name.
+ * @param string $name Display name for the role.
+ * @param array  $capabilities Key/value array of capabilities for the role.
  */
 function add_role( $role, $name, $capabilities ) {
 	if ( function_exists( 'wpcom_vip_add_role' ) ) {
@@ -62,6 +80,7 @@ function add_role( $role, $name, $capabilities ) {
 			\add_role( $role, $name, $capabilities );
 
 			if ( ! isset( $wp_user_roles[ $role ] ) ) {
+				// phpcs:ignore
 				$wp_user_roles[ $role ] = array(
 					'name'         => $name,
 					'capabilities' => $capabilities,
@@ -78,8 +97,8 @@ function add_role( $role, $name, $capabilities ) {
  *
  * Usage: add_role_caps( 'contributor', array( 'upload_files' ) );
  *
- * @param string $role Role name
- * @param array $caps Capabilities to add to the role
+ * @param string $role Role name.
+ * @param array  $caps Capabilities to add to the role.
  */
 function add_role_caps( $role, $caps ) {
 	if ( function_exists( 'wpcom_vip_add_role_caps' ) ) {
@@ -98,8 +117,8 @@ function add_role_caps( $role, $caps ) {
  *
  * Usage: merge_role_caps( 'author', array( 'publish_posts' => false ) );
  *
- * @param string $role Role name
- * @param array $caps Key/value array of capabilities for this role
+ * @param string $role Role name.
+ * @param array  $caps Key/value array of capabilities for this role.
  */
 function merge_role_caps( $role, $caps ) {
 	if ( function_exists( 'wpcom_vip_merge_role_caps' ) ) {
@@ -125,6 +144,7 @@ function merge_role_caps( $role, $caps ) {
 		}
 
 		if ( isset( $wp_user_roles[ $role ] ) ) {
+			// phpcs:ignore
 			$wp_user_roles[ $role ]['capabilities'] = array_merge( $current_caps, (array) $caps );
 		}
 	}
