@@ -17,9 +17,9 @@ class ZipFile {
 	/**
 	 * Whether to echo zip as it's built or return as string from -> file
 	 *
-	 * @var  boolean  $doWrite
+	 * @var  boolean  $do_write
 	 */
-	public $doWrite = false;
+	public $do_write = false;
 
 	/**
 	 * Array to store compressed data
@@ -51,10 +51,10 @@ class ZipFile {
 
 
 	/**
-	 * Sets member variable this -> doWrite to true
+	 * Sets member variable this -> do_write to true
 	 * - Should be called immediately after class instantiation
 	 * - If set to true, then ZIP archive are echo'ed to STDOUT as each
-	 *   file is added via this -> addfile(), and central directories are
+	 *   file is added via this -> add_file(), and central directories are
 	 *   echoed to STDOUT on final call to this -> file().  Also,
 	 *   this -> file() returns an empty string so it is safe to issue a
 	 *   "echo $zipfile;" command
@@ -63,9 +63,9 @@ class ZipFile {
 	 *
 	 * @return void
 	 */
-	public function setDoWrite() {
-		$this->doWrite = true;
-	} // end of the 'setDoWrite()' method
+	public function set_do_write() {
+		$this->do_write = true;
+	}
 
 	/**
 	 * Converts an Unix timestamp to a four byte DOS date and time format (date
@@ -77,7 +77,7 @@ class ZipFile {
 	 *
 	 * @access private
 	 */
-	public function unix2DosTime( $unixtime = 0 ) {
+	private function unix_to_dos_time( $unixtime = 0 ) {
 		$timearray = ( 0 === $unixtime ) ? getdate() : getdate( $unixtime );
 
 		if ( $timearray['year'] < 1980 ) {
@@ -95,7 +95,7 @@ class ZipFile {
 				| ( $timearray['hours'] << 11 )
 				| ( $timearray['minutes'] << 5 )
 				| ( $timearray['seconds'] >> 1 );
-	} // end of the 'unix2DosTime()' method
+	} // end of the 'unix_to_dos_time()' method
 
 
 	/**
@@ -109,10 +109,10 @@ class ZipFile {
 	 *
 	 * @return void
 	 */
-	public function addFile( $data, $name, $time = 0 ) {
+	public function add_file( $data, $name, $time = 0 ) {
 		$name = str_replace( '\\', '/', $name );
 
-		$hexdtime = pack( 'V', $this->unix2DosTime( $time ) );
+		$hexdtime = pack( 'V', $this->unix_to_dos_time( $time ) );
 
 		$fr  = "\x50\x4b\x03\x04";
 		$fr .= "\x14\x00";            // ver needed to extract.
@@ -137,13 +137,13 @@ class ZipFile {
 		$fr .= $zdata;
 
 		// echo this entry on the fly, ...
-		if ( $this->doWrite ) {
-			echo $fr;
+		if ( $this->do_write ) {
+			echo esc_html( $fr );
 		} else {                     // ... OR add this entry to array
 			$this->datasec[] = $fr;
 		}
 
-		// now add to central directory record
+		// Now add to central directory record.
 		$cdrec  = "\x50\x4b\x01\x02";
 		$cdrec .= "\x00\x00";                // version made by.
 		$cdrec .= "\x14\x00";                // version needed to extract.
@@ -169,13 +169,13 @@ class ZipFile {
 		// optional extra field, file comment goes here
 		// save to central directory.
 		$this->ctrl_dir[] = $cdrec;
-	} // end of the 'addFile()' method
+	} // end of the 'add_file()' method
 
 
 	/**
-	 * Echo central dir if ->doWrite==true, else build string to return
+	 * Echo central dir if ->do_write==true, else build string to return
 	 *
-	 * @return string  if ->doWrite {empty string} else the ZIP file contents
+	 * @return string  if ->do_write {empty string} else the ZIP file contents
 	 *
 	 * @access public
 	 */
@@ -189,8 +189,8 @@ class ZipFile {
 					pack( 'V', $this->old_offset ) . // offset to start of central dir.
 					"\x00\x00";                            // .zip file comment length.
 
-		if ( $this->doWrite ) { // Send central directory & end ctrl dir to STDOUT.
-			echo $header;
+		if ( $this->do_write ) { // Send central directory & end ctrl dir to STDOUT.
+			echo esc_html( $header );
 			return '';            // Return empty string.
 		} else {                  // Return entire ZIP archive as string.
 			$data = implode( '', $this->datasec );

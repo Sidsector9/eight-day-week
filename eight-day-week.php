@@ -63,6 +63,8 @@ define( 'EDW_AJAX_NONCE_SLUG', 'edw_ajax_nonce' );
 /**
  * Calls the setup function of any namespaced files
  * in the includes/functions dir
+ *
+ * @throws \Exception Failed to load a file.
  */
 function edw_bootstrap() {
 
@@ -96,7 +98,7 @@ function edw_bootstrap() {
 				do_action( $namespace . '\setup' );
 			}
 		} catch ( \Exception $e ) {
-
+			throw new \Exception( $e->getMessage() );
 		}
 	}
 }

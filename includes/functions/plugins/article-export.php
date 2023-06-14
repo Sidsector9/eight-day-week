@@ -800,11 +800,11 @@ class Articles_Zip {
 	 * @return \ZipFile
 	 */
 	public function build_zip() {
-		include_once EDW_INC . 'lib/zip.lib.php';
+		include_once EDW_INC . 'lib/class-zipfile.php';
 		$zip = new \ZipFile();
 
 		foreach ( $this->files as $file ) {
-			$zip->addFile( $file->contents, $file->filename );
+			$zip->add_file( $file->contents, $file->filename );
 		}
 
 		return $zip;
