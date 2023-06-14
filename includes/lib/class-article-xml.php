@@ -100,8 +100,9 @@ class Article_XML {
 			if ( ! $value ) {
 				continue;
 			}
-			$element            = $xml_elements->xml_document->createElement( $tag_name );
-			$element->nodeValue = $value;
+			$element = $xml_elements->xml_document->createElement( $tag_name );
+			// Ignoring phpcs due to what PHP's DOMXPath class uses.
+			$element->nodeValue = $value; // phpcs:ignore
 			$xml_elements->root_element->appendChild( $element );
 		}
 	}
@@ -207,7 +208,8 @@ class Article_XML {
 		foreach ( $remove as $tag_name => $els ) {
 			foreach ( $els as $el ) {
 				try {
-					$el->parentNode->removeChild( $el );
+					// Ignoring phpcs due to what PHP's DOMXPath class uses.
+					$el->parentNode->removeChild( $el ); // phpcs:ignore
 				} catch ( \Exception $e ) {
 					throw new \Exception( $e->getMessage() );
 				}
@@ -246,9 +248,10 @@ class Article_XML {
 					$wrap = $dom->createElement( $set['container'] );
 					$dom->appendChild( $wrap );
 					foreach ( $elements as $el ) {
-						$remove[]           = $el;
-						$element            = $dom->createElement( $set['tag_name'] );
-						$element->nodeValue = $el->nodeValue;
+						$remove[] = $el;
+						$element  = $dom->createElement( $set['tag_name'] );
+						// Ignoring phpcs due to what PHP's DOMXPath class uses.
+						$element->nodeValue = $el->nodeValue; // phpcs:ignore
 						$wrap->appendChild( $element );
 					}
 					foreach ( $remove as $el ) {
@@ -285,7 +288,8 @@ class Article_XML {
 		$content_element = $xml_document->createElement( apply_filters( __NAMESPACE__ . '\xml_content_element', 'content' ) );
 		$article_element->appendChild( $content_element );
 
-		foreach ( $content->childNodes as $el ) {
+		// Ignoring phpcs due to what PHP's DOMXPath class uses.
+		foreach ( $content->childNodes as $el ) { // phpcs:ignore
 			$content_element->appendChild( $xml_document->importNode( $el, true ) );
 		}
 

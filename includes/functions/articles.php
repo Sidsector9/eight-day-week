@@ -259,7 +259,8 @@ class AL_Table extends \WP_Posts_List_Table {
 	 *
 	 * @return string
 	 */
-	public function _column_title( $item, $classes = '', $data = '', $primary = false ) {
+	// Ignoring phpcs as we're overriding the WP's core parent class method.
+	public function _column_title( $item, $classes = '', $data = '', $primary = false ) { // phpcs:ignore
 		$html  = '<td class="' . esc_attr( $classes ) . ' page-title" ' . esc_attr( $data ) . '>';
 		$html .= $this->column_title( $item );
 		$html .= '</td>';
